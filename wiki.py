@@ -22,7 +22,6 @@ class WikiURL(object):
 		if self.curr_hops == self.MAX_HOPS:
 			print self.MAX_HOPS, "attempts tried without finding Philosophy page. Please try again"
 			return
-		self.curr_hops += 1
 
 		# If we've visited it, we're stuck and need to start over
 		if url in self.visited:
@@ -36,6 +35,7 @@ class WikiURL(object):
 			print "Page found! Took", self.curr_hops, "hops"
 			return
 		else:
+			self.curr_hops += 1
 			newURL = self.findURL(url)
 			self.goToURL(newURL)
 
@@ -57,6 +57,8 @@ class WikiURL(object):
 
 	# Make sure the first URL we see is a wiki URL
 	def testURL(self, url):
-		return url.find("http://en.wikipedia.org/wiki/") >= 0
+		if url.find("http://en.wikipedia.org/wiki/") < 0:
+			return False
+		return True
 
 WikiURL(init_url)
