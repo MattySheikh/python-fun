@@ -44,17 +44,21 @@ class WikiURL(object):
 	def findURL(self, url):
 		print "Going to", url
 		page = urllib2.urlopen(url)
-		url = self.parsePage(page)
+		url = self.parsePage(page, url)
 		return url
 
-	def parsePage(self, page):
+	def parsePage(self, page, curr_url):
 		soup = BeautifulSoup(page)
 		text = soup.find(id = "mw-content-text")
 		p_tags = text.find_all('p')
 		for tags in p_tags:
 			a_tags = tags.find_all('a', href = True)
-			if a_tags[0]['href']:
-				return str(self.root) +  str(a_tags[0]['href'])
+			for next_a_tag in a_tags:
+				curr_tag = next_a_tag['href']
+				if not self.isNewPage(curr_tag, curr_url):
+					continue
+				elif next_a_tag['href']:
+					return str(self.root) + str(next_a_tag['href'])
 
 	# Make sure the first URL we see is a wiki URL
 	def testURL(self, url):
@@ -62,10 +66,16 @@ class WikiURL(object):
 			return False
 		return True
 
+	# Ensure we are not clicking on citations
+	def isNewPage(self, url, curr_url):
+		if url.find("#") == 0 and url.find("/") < 0:
+			return False
+		return True
+
 if len(sys.argv) < 2:
 	print "Please insert a starting URL"
 else:
 	init_url = sys.argv[1]
-	WikiURL(init_url)
 	print "Starting at", init_url
+	WikiURL(init_url)
 
