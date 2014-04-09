@@ -1,5 +1,5 @@
 import sys
-import urllib2
+import requests
 from bs4 import BeautifulSoup
 
 class WikiURL(object):
@@ -43,7 +43,7 @@ class WikiURL(object):
 	# Parse the wiki page and grab the first URL we see in a <p> tag
 	def findURL(self, url):
 		print "Going to", url
-		page = urllib2.urlopen(url)
+		page = requests.get(url).text
 		url = self.parsePage(page)
 		return url
 
