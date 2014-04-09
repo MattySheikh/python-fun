@@ -55,12 +55,11 @@ class WikiURL(object):
 			a_tags = tags.find_all('a', href = True)
 			for next_a_tag in a_tags:
 				curr_tag = next_a_tag['href']
-				if not self.isNewPage(curr_tag, curr_url):
-					continue
-				elif next_a_tag['href']:
+				is_new_page = self.isNewPage(curr_tag, curr_url)
+				if next_a_tag['href'] and is_new_page:
 					return str(self.root) + str(next_a_tag['href'])
 
-	# Make sure the first URL we see is a wiki URL
+	# Make sure the URL we see is a wiki URL and not some audo file or bad link
 	def testURL(self, url):
 		if url.find("http://en.wikipedia.org/wiki/") < 0:
 			return False
@@ -68,7 +67,9 @@ class WikiURL(object):
 
 	# Ensure we are not clicking on citations
 	def isNewPage(self, url, curr_url):
-		if url.find("#") == 0 and url.find("/") < 0:
+		is_file = url.find("File:") >= 0
+		is_wiki_page = url.find("/wiki/") >= 0
+		if url.find("#") == 0 and url.find("/") < 0 or not is_wiki_page or is_file:
 			return False
 		return True
 
@@ -78,4 +79,3 @@ else:
 	init_url = sys.argv[1]
 	print "Starting at", init_url
 	WikiURL(init_url)
-
