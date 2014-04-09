@@ -14,7 +14,7 @@ class WikiURL(object):
 		if self.testURL(url):
 			self.goToURL(url)
 		else:
-			print "Invalid URL. Please run script with a valid URL"
+			print "Invalid URL. Please run script with a valid Wikipedia URL"
 
 	def goToURL(self, url):
 		if self.curr_hops == self.MAX_HOPS:
@@ -44,10 +44,10 @@ class WikiURL(object):
 	def findURL(self, url):
 		print "Going to", url
 		page = urllib2.urlopen(url)
-		url = self.parsePage(page, url)
+		url = self.parsePage(page)
 		return url
 
-	def parsePage(self, page, curr_url):
+	def parsePage(self, page):
 		soup = BeautifulSoup(page)
 		text = soup.find(id = "mw-content-text")
 		p_tags = text.find_all('p')
@@ -55,7 +55,7 @@ class WikiURL(object):
 			a_tags = tags.find_all('a', href = True)
 			for next_a_tag in a_tags:
 				curr_tag = next_a_tag['href']
-				is_new_page = self.isNewPage(curr_tag, curr_url)
+				is_new_page = self.isNewPage(curr_tag)
 				if next_a_tag['href'] and is_new_page:
 					return str(self.root) + str(next_a_tag['href'])
 
@@ -66,7 +66,7 @@ class WikiURL(object):
 		return True
 
 	# Ensure we are not clicking on citations
-	def isNewPage(self, url, curr_url):
+	def isNewPage(self, url):
 		is_file = url.find("File:") >= 0
 		is_wiki_page = url.find("/wiki/") >= 0
 		if url.find("#") == 0 and url.find("/") < 0 or not is_wiki_page or is_file:
