@@ -67,7 +67,7 @@ class WikiURL(object):
 
 	# Ensure we are not clicking on citations
 	def isNewPage(self, url):
-		is_file = url.find("File:") >= 0
+		is_file = url.find("File:") >= 0 or url.find("Help:") >= 0 or url.find("Wikipedia:") >= 0
 		is_wiki_page = url.find("/wiki/") >= 0
 		if url.find("#") == 0 and url.find("/") < 0 or not is_wiki_page or is_file:
 			return False
