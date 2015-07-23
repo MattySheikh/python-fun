@@ -1,2 +1,13 @@
-BeautifulSoup
-requests
+beautifulsoup4==4.4.0
+certifi==2015.4.28
+chardet==2.3.0
+dj-database-url==0.3.0
+Django==1.8.1
+django-cors-headers==1.1.0
+django-postgrespool==0.3.0
+gunicorn==19.3.0
+psycopg2==2.6
+requests==0.11.1
+SQLAlchemy==1.0.4
+vboxapi==1.0
+whitenoise==1.0.6
